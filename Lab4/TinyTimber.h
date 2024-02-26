@@ -111,21 +111,27 @@ typedef signed long Time;
 //      deadline = infinity.
 #define SEND(bl, dl, obj, meth, arg) \
         async(bl, dl, (Object*)obj, (Method)meth, (int)arg)
+
 //      Construct a Time value from an argument given in microseconds.
 #define USEC(x) \
         ((Time)(((x) * (Time)125) / 4) / (Time)1000)
+
 //      Construct a Time value from an argument given in milliseconds.
 #define MSEC(x) \
         ((Time)(((x) * (Time)125) / 4))
+
 //      Construct a Time value from an argument given in seconds.
 #define SEC(x) \
         (((x) * (Time)31250)) 
+
 //      Extract the microsecond fraction of a Time value
 #define USEC_OF(t) \
         (int)(((t) % ((Time)31250)) * 32)
+
 //      Extract the millisecond fraction of a Time value
 #define MSEC_OF(t) \
         (int)(((t) % ((Time)31250)) * 4 / 125)
+        
 //      Extract the while second basis of a Time value
 #define SEC_OF(t) \
         (int)((t) / ((Time)31250))
