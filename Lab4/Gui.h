@@ -18,7 +18,8 @@ void write_right(struct Gui *self, int num);
 // set the state of s1 segment
 void set_s1(struct Gui *self, int state);
 
-// set the state of s1 segment
+// set the state of s2 segment
 void set_s2(struct Gui *self, int state);
 
+// setups the the register required for the display
 void setupLCD(struct Gui *self, int _);
