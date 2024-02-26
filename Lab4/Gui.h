@@ -1,7 +1,9 @@
+#pragma once
+
 #include "TinyTimber.h"
 #include "avr/io.h"
 
-#define initGui() initObject()
+#define initGui() {initObject()}
 
 struct Gui{
     Object obj;
