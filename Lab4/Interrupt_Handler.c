@@ -5,18 +5,18 @@
 
 void read_port_e(struct Interrupt_Handler *self, int _){
 	uint8_t pin_change = PINE^self->last_pin_e;
-    if (pin_change & (1<<PE2)){ // joy right
+    if (pin_change & (1<<PE2)){ // joy left
         if (PINE & (1<<PE2)){
-            ASYNC(self->cntr, joy_right_off, NULL);
-        } else {
-            ASYNC(self->cntr, joy_right_on, NULL);
-        }
-    }
-    if (pin_change & (1<<PE3)){
-        if (PINE & (1<<PE3)){ // joy left
             ASYNC(self->cntr, joy_left_off, NULL);
         } else {
             ASYNC(self->cntr, joy_left_on, NULL);
+        }
+    }
+    if (pin_change & (1<<PE3)){
+        if (PINE & (1<<PE3)){ // joy right
+            ASYNC(self->cntr, joy_right_off, NULL);
+        } else {
+            ASYNC(self->cntr, joy_right_on, NULL);
         }
     }
     self->last_pin_e = PINE;
