@@ -2,9 +2,6 @@
 Labb 4 för kursen d0003e realtidssystem.
 I uppgiften implementeras en reaktivt system
 
-## Kända problem
-Det kan förekomma drift i implementationen då ``After`` har en base då den kallades och inte från föra, så perioden blir längre än avsätt
-
 ## GUI klassen
 Denna klass tar hand om det grafiska gränsnittet till användaren.
 Klassen tar även hand om interrupt som skapas av joysticken.
@@ -21,37 +18,70 @@ https://mermaid.js.org/syntax/classDiagram.html
 ```mermaid
 classDiagram
 
-    class GUI{
-        -current_generator : GENRATOR *
-        -generator_1 : GENRATOR *
-        -generator_2 : GENRATOR *
-        -switch_left()
-        -switch_right()
-        -inc_current_freq(GENERATOR* gen)
-        -dec_current_freq(GENERATOR* gen)
-        -display_generator(GENERATOR* gen)
+    class Controller {
+        - current_generator : GENRATOR *
+        - generator_1 : GENRATOR *
+        - generator_2 : GENRATOR *
+        - up_pressed : bool
+        - down_pressed : bool
+
+        + joy_up_on() void
+        + joy_down_on() void
+        + joy_left_on() void
+        + joy_right_on() void
+        + joy_up_off() void
+        + joy_down_off() void
+        + joy_left_off() void
+        + joy_right_off() void
+        - inc_current_freq(GENERATOR* gen)
+        - dec_current_freq(GENERATOR* gen)
+        - switch_left()
+        - switch_right()
+    }
+    
+    class Gui{
+        + initLCD() void
+        + toggle_s_segments() void
+        + set_num_1_value() void
+        + set_num_2_value() void
     }
 
-    class GENRATOR {
+    class Generator {
         - enable : bool
         - freq : int
-        - freq_mutex : mutex
         - delay : int
-        - delay_mutex : mutex
-        - pin_num : unknown
-        - pin_state_shadow : bool
-        + init(pin_num)
-        + set_freq(int freq)
+        - pin : int
+        + init(pin) void
+        + get_freq(int freq)
+        + inc_freq()
+        + dec_freq()
         + enable(bool enable)
         - freq_to_half_period()
         - set_pin(bool)
         - cyclic_func()
     }
+
+    class Pin_Out_Maneger {
+        - shadow_e4 : bool
+        - shadow_e6 : bool
+        + status_pin_e4() bool
+        + status_pin_e6() bool
+        + set_pin_e4(state) void
+        + set_pin_e6(state) void
+    }
+
+    class Joystick_Interrupt_Handler {
+        - last_pin_b uint8_T
+        - last_pin_e uint8_T
+        - controller_ref : Controller*
+        - PCINT0_handler() void
+        - PCINT1_handler() void
+    }
 ```
 
 # Implementation
 
-## GUI klassen
+## Gui klassen
 
 ### ``switch_left()`` och ``switch_right()``
 Dessa funktioner byter vad ``current_generator`` pekar på,
@@ -64,7 +94,7 @@ om frekvensen blir 0 så stängs generator av
 ### ``display_generator``
 Skriver utt frekvensen för ``current_generator`` till LCD
 
-## GENERATOR klassen
+## Generator klassen
 
 ### ``init``
 Sätter upp pin för output och initialselar andra variabler
@@ -82,3 +112,22 @@ Om generatorn kallas med **av** och den är **av** görs ingenting.
 När ``cyclic_func`` kallas och generatorn är av så returnerar functioned.
 om generatorn är på så byts stadiet på pin och ``after`` kallas med sig själv med en
 tids som beräknades tidigare med ``freq_to_half_period``
+
+## Joystick_Interrupt_Handler klassen
+
+### ``init_joystick``
+Funktionen tar och sätter de register för att tillåta interrupts på joystickens pins.
+Samt så installeras objektet som en interrupt hanterare på IRQ_PCINT0 och IRQ_PCINT1.
+| joystick function | Pin   | interrupt |
+| - | - | - |
+| mitten klick      | PB4   | nr 12     |
+| uppåt             | PB6   | nr 14     | 
+| nedåt             | PB7   | nr 15     | 
+| vänster           | PE2   | nr 2      | 
+| höger             | PE3   | nr 3      |
+
+### ``PCINT0_handler`` och ``PCINT1_handler``
+Dessa funktioner är kopplade till IRQ_PCINT0 och IRQ_PCINT1
+och deras funktion är att kalla ``Controller`` olika metoder som hanterar joystick input
+(Tex ``joy_up_on()``).
+Separering av objects funktion bryts lite då även fördröjning skickas med för att undvika att utöka ``Controller`` klassens kod för mycket.
