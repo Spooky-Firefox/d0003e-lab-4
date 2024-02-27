@@ -19,11 +19,16 @@ https://mermaid.js.org/syntax/classDiagram.html
 classDiagram
 
     class Controller {
-        - current_generator : GENRATOR *
-        - generator_1 : GENRATOR *
-        - generator_2 : GENRATOR *
-        - up_pressed : bool
-        - down_pressed : bool
+        - up_msg : Msg
+        - down-msg : Msg
+
+        + gui : Gui *
+
+        - current_generator : Generator *
+        + generator_1 : Generator *
+        + generator_2 : Generator *
+
+        + init_all() void
 
         + joy_up_on() void
         + joy_down_on() void
@@ -33,17 +38,17 @@ classDiagram
         + joy_down_off() void
         + joy_left_off() void
         + joy_right_off() void
-        - inc_current_freq(GENERATOR* gen)
-        - dec_current_freq(GENERATOR* gen)
+        - display_current_generator(int value);
         - switch_left()
         - switch_right()
     }
     
     class Gui{
-        + initLCD() void
-        + toggle_s_segments() void
-        + set_num_1_value() void
-        + set_num_2_value() void
+        + setupLCD() void
+        + set_s1(bool state) void
+        + set_s2(bool state) void
+        + write_left(int num) void
+        + write_right(int num) void
     }
 
     class Generator {
@@ -83,16 +88,14 @@ classDiagram
 
 ## Gui klassen
 
-### ``switch_left()`` och ``switch_right()``
-Dessa funktioner byter vad ``current_generator`` pekar på,
-och byter vilket segment som visar nuvarande generator
+### ``setupLCD``
+Sätter de register som behövs för att kunna använda LCD
 
-### ``inc_current_freq`` och ``dec_current_freq``
-Dessa funktioner ökar och minskar ``current_generator`` frekvens.
-om frekvensen blir 0 så stängs generator av
+### ``set_s1`` och ``set_s2``
+Sätter s1 och s2 segmenten beroende på den inskickade tillstånd
 
-### ``display_generator``
-Skriver utt frekvensen för ``current_generator`` till LCD
+### ```write_left`` och ``write_left``
+Skriven det skickade talet till position 0,1 eller 4,5 beroende om det är ``write_left`` eller ``write_right``
 
 ## Generator klassen
 
