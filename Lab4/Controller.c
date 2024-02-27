@@ -12,35 +12,33 @@ void toggle_right(struct Controller *self, int _){
 	ASYNC(self->gui,set_s2, 1);
 }
 
-void joy_up_on(struct Controller *self, int _){
+void joy_up_on(struct Controller *self, int delay_next){
 	int freq = SYNC(self->current_generator,get_freq,NULL);
-	if (freq < 99){
-        // ASYNC(self->current_generator,inc_freq,NULL);
-        // write freq +1 
-    } else if (freq == 0){
-        // async enable
-        // async inc
-        // write freq +1
+    if (freq < 99){
+        ASYNC(self->current_generator,set_freq,freq+1);
+        if (freq == 0){
+            // enable
+        }
+        display_current(self,freq+1);
     }
     // AFTER(bl, obj, meth, arg)
-    self->up_msg = AFTER(MSEC(500), self, joy_up_on, NULL);
+    self->up_msg = AFTER(MSEC(delay_next), self, joy_up_on, 100);
 }
 
 void joy_up_off(struct Controller *self, int _){
     ABORT(self->up_msg);
 }
 
-void joy_down_on(struct Controller *self, int _){
+void joy_down_on(struct Controller *self, int delay_next){
     int freq = SYNC(self->current_generator,get_freq,NULL);
-    if (freq > 1) {
-        // async deq freq
-        // write freq-1
-    } else if (freq == 1) {
-        // async disable
-        // async deq freq
-        // write freq-1
+    if (freq){
+        ASYNC(self->current_generator,set_freq,freq-1);
+        if (freq == 1){
+            // disable
+        }
+        display_current(self,freq-1);
     }
-    self->down_msg = AFTER(MSEC(500), self, joy_down_on, NULL);
+    self->down_msg = AFTER(MSEC(delay_next), self, joy_down_on, 100);
 }
 
 void joy_down_off(struct Controller *self, int _){
@@ -52,6 +50,14 @@ void joy_left_on(struct Controller *self, int _){
 }
 void joy_left_off(struct Controller *self, int _){
     // do nothing
+}
+
+void display_current(struct Controller *self, int val){
+    if(self->current_generator == self->generator_0) {
+        ASYNC(self->gui,write_left,val);
+    } else {
+        ASYNC(self->gui,write_right,val);
+    };
 }
 
 void joy_right_on(struct Controller *self, int _){ 
