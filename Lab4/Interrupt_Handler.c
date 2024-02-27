@@ -3,49 +3,51 @@
 #include "avr/io.h"
 #define NOP asm("nop")
 
-void read_port_e(struct Interrupt_Handler *self, int _){
+void PCINT0_handler(struct Interrupt_Handler *self, int _){
 	uint8_t pin_change = PINE^self->last_pin_e;
+    uint8_t pin_val = PINE;
     if (pin_change & (1<<PE2)){ // joy left
-        if (PINE & (1<<PE2)){
+        if (pin_val & (1<<PE2)){
             ASYNC(self->cntr, joy_left_off, NULL);
         } else {
             ASYNC(self->cntr, joy_left_on, NULL);
         }
     }
     if (pin_change & (1<<PE3)){
-        if (PINE & (1<<PE3)){ // joy right
+        if (pin_val & (1<<PE3)){ // joy right
             ASYNC(self->cntr, joy_right_off, NULL);
         } else {
             ASYNC(self->cntr, joy_right_on, NULL);
         }
     }
-    self->last_pin_e = PINE;
+    self->last_pin_e = pin_val;
     
 }
-void read_port_b(struct Interrupt_Handler *self, int _){
+void PCINT1_handler(struct Interrupt_Handler *self, int _){
     uint8_t pin_change = PINB^self->last_pin_b;
+	uint8_t pin_val = PINB;
     if (pin_change & (1<<PB4)){
-        if (PINE & (1<<PB4)){ // joy middle
+        if (pin_val & (1<<PB4)){ // joy_middle
             ASYNC(self->cntr, joy_up_off, NULL);
         } else {
-            ASYNC(self->cntr, joy_up_on, NULL);
+            ASYNC(self->cntr, joy_up_on, 100);
         }
     }
     if (pin_change & (1<<PB6)){ //joy_up
-        if (PINE & (1<<PB6)){
+        if (pin_val & (1<<PB6)){
             ASYNC(self->cntr, joy_up_off, NULL);
         } else {
-            ASYNC(self->cntr, joy_up_on, NULL);
+            ASYNC(self->cntr, joy_up_on, 1000);
         }
     }
     if (pin_change & (1<<PB7)){// joy_down
-        if (PINE & (1<<PB7)){ 
+        if (pin_val & (1<<PB7)){
             ASYNC(self->cntr, joy_down_off, NULL);
         } else {
-            ASYNC(self->cntr, joy_up_on, NULL);
+            ASYNC(self->cntr, joy_down_on, 1000);
         }
     }
-    self->last_pin_b = PINB;
+    self->last_pin_b = pin_val;
 }
 
 void init_joystick(struct Interrupt_Handler *self, struct Controller *cntr){
@@ -59,14 +61,14 @@ void init_joystick(struct Interrupt_Handler *self, struct Controller *cntr){
     EIMSK = EIMSK | (1<<PCIE1) | (1<<PCIE0);
 
     //enable interrupt for joystick pins
-    // PB4, interrupt 12
-    // PB6, interrupt 14
-    // PB7, interrupt 15
-    // PE2, interrupt 2
-    // PE3, interrupt 3
+    // PB4, interrupt 12,   joy_middle
+    // PB6, interrupt 14,   joy_up
+    // PB7, interrupt 15,   joy_down
+    // PE2, interrupt 2,    joy left
+    // PE3, interrupt 3,    joy right
     PCMSK1 = PCMSK1 | (1<< PCINT12) | (1<< PCINT14) | (1<< PCINT15);
     PCMSK0 = PCMSK0 | (1<< PCINT2)  | (1<< PCINT3);
 
-    INSTALL(self,read_port_e,IRQ_PCINT0);
-    INSTALL(self,read_port_b,IRQ_PCINT1);
+    INSTALL(self,PCINT0_handler,IRQ_PCINT0);
+    INSTALL(self,PCINT1_handler,IRQ_PCINT1);
 }

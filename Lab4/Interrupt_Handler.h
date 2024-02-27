@@ -15,4 +15,5 @@ struct Interrupt_Handler{
 
 #define initInterrupt_Handler() {initObject(),NULL,0xF1,0x8F}
 
+// setts upp the interrupt_handler object, enables interrupts and installs itself on IRQ_PCINT0 and IRQ_PCINT1
 void init_joystick(struct Interrupt_Handler *self, struct Controller *cntr);
