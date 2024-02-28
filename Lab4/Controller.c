@@ -1,5 +1,7 @@
 #include "Controller.h"
 
+#define REAPEAT_DEALY MSEC(75)
+
 void toggle_left(struct Controller *self, int _){
 	self->current_generator = self->generator_0;
 	ASYNC(self->gui,set_s1, 1); // self.gui.set_s1(1)
@@ -20,9 +22,10 @@ void joy_up_on(struct Controller *self, int delay_next){
             // enable
         }
         display_current(self,freq+1);
+        // AFTER(bl, obj, meth, arg)
+        self->up_msg = AFTER(delay_next, self, joy_up_on, REAPEAT_DEALY);
     }
-    // AFTER(bl, obj, meth, arg)
-    self->up_msg = AFTER(MSEC(delay_next), self, joy_up_on, 100);
+    // ABORT(self->up_msg); // stop next up counter if exist
 }
 
 void joy_up_off(struct Controller *self, int _){
@@ -37,8 +40,9 @@ void joy_down_on(struct Controller *self, int delay_next){
             // disable
         }
         display_current(self,freq-1);
+        self->down_msg = AFTER(delay_next, self, joy_down_on, REAPEAT_DEALY); // make new down counter
     }
-    self->down_msg = AFTER(MSEC(delay_next), self, joy_down_on, 100);
+    // ABORT(self->down_msg); // stop next down counter if exist
 }
 
 void joy_down_off(struct Controller *self, int _){

@@ -1,7 +1,9 @@
 #include "Interrupt_Handler.h"
 #include "Controller.h"
 #include "avr/io.h"
+
 #define NOP asm("nop")
+#define DELAY MSEC(1000)
 
 void PCINT0_handler(struct Interrupt_Handler *self, int _){
 	uint8_t pin_change = PINE^self->last_pin_e;
@@ -30,21 +32,21 @@ void PCINT1_handler(struct Interrupt_Handler *self, int _){
         if (pin_val & (1<<PB4)){ // joy_middle
             ASYNC(self->cntr, joy_up_off, NULL);
         } else {
-            ASYNC(self->cntr, joy_up_on, 100);
+            ASYNC(self->cntr, joy_up_on, MSEC(50));
         }
     }
     if (pin_change & (1<<PB6)){ //joy_up
         if (pin_val & (1<<PB6)){
             ASYNC(self->cntr, joy_up_off, NULL);
         } else {
-            ASYNC(self->cntr, joy_up_on, 1000);
+            ASYNC(self->cntr, joy_up_on, DELAY);
         }
     }
     if (pin_change & (1<<PB7)){// joy_down
         if (pin_val & (1<<PB7)){
             ASYNC(self->cntr, joy_down_off, NULL);
         } else {
-            ASYNC(self->cntr, joy_down_on, 1000);
+            ASYNC(self->cntr, joy_down_on, DELAY);
         }
     }
     self->last_pin_b = pin_val;
