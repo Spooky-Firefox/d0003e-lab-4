@@ -1,14 +1,14 @@
 # Labb 4 Realtidssystem
 Labb 4 för kursen d0003e realtidssystem.
-I uppgiften implementeras en reaktivt system
+I uppgiften implementeras ett reaktivt system för att styra två fyrkant vågs generatorer.
 
 ## GUI klassen
 Denna klass tar hand om det grafiska gränsnittet till användaren som att skriva till LCD och sätta segment
 
 ## Controller klassen
 Syftet för denna kalls ärr att fungera som en controller av de andra klasserna,
-den för kallelser av ``Joystick_Interrupt_Handler`` och bestämmer mad som ska göras.
-Som exempel är det dens jobb att öka freq, skriva ut den nya freq när ``joy_up_on`` kallas.
+den för kallelser av ``Joystick_Interrupt_Handler`` och bestämmer vad som ska göras.
+Som exempel är det dens jobb att öka freq och skriva ut den nya freq när ``joy_up_on`` kallas.
 
 ## Joystick_Interrupt_Handler klassen
 Klassen tar hand om när en interrupt sker och skickar vad som hända till Controller klassen med att asynkront kalla på tex ``joy_up_on`` 
@@ -17,7 +17,7 @@ Klassen tar hand om när en interrupt sker och skickar vad som hända till Contr
 Denna klass generar en fyrkantig våg på den givna pinnen med den givna frekvensen.
 
 ## Pin Out Maneger
-Output tass hand av denna klass, detta behövs för att undvika race condition vid skrivning till pinsen.  
+Output tass hand av denna klass, detta behövs för att undvika race condition vid skrivning till kontroll register för output.  
 
 ## Klass diagram
 <!--
@@ -162,5 +162,6 @@ dessa funktioner ändrar current_generator och kallar på gui för att ändra vi
 Gör ingenting men finns för att kunna utöka funktionaliteten vid senare skede
 
 ### ``display_current_generator``
-Denna hjälpfunktion tittar på vilken current_generator är och väljer om 
+Denna hjälpfunktion jämför current generator med gen0 och gen1,
+därefter skriver den ut det värde som skickades in.
 
