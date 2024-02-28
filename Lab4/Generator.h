@@ -15,9 +15,9 @@ struct Generator
 };
 #define initGenerator() {initObject(),0,0,NULL,NULL,NULL}
 
+// void cyclic_func(struct Generator *self, int _);
 int get_freq(struct Generator *self, int _);
 void set_freq(struct Generator *self, int value);
-void enable(struct Generator *self, int enable);
 
 
 

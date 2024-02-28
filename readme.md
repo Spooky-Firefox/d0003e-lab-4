@@ -8,8 +8,7 @@ Denna klass tar hand om det grafiska gränsnittet till användaren som att skriv
 ## Controller klassen
 Syftet för denna kalls ärr att fungera som en controller av de andra klasserna,
 den för kallelser av ``Joystick_Interrupt_Handler`` och bestämmer mad som ska göras.
-Som exempel är det dens jobb att öka freq, skriva ut den nya freq 
-och säkerhetstala att den är på när den får en kalles av ``joy_up_on``.
+Som exempel är det dens jobb att öka freq, skriva ut den nya freq när ``joy_up_on`` kallas.
 
 ## Joystick_Interrupt_Handler klassen
 Klassen tar hand om när en interrupt sker och skickar vad som hända till Controller klassen med att asynkront kalla på tex ``joy_up_on`` 
@@ -65,15 +64,11 @@ classDiagram
         - enable : bool
         - freq : int
         - delay : int
-        - pin_manger : Pin_Out_Maneger*
-        - pin : int
+        + pin_manger : Pin_Out_Maneger*
+        + pin : int
 
-        + init(pin) void
         + get_freq() int
         + set_freq(int freq)
-        + enable(bool enable)
-        - freq_to_half_period()
-        - set_pin(bool)
         - cyclic_func()
     }
 
@@ -114,13 +109,10 @@ Skriven det skickade talet till position 0,1 eller 4,5 beroende om det är ``wri
 Sätter upp pin för output och initialselar andra variabler
 
 ### ``set_freq``
-Sätter ``freq`` och beräknar delay med ``freq_to_half_period``
+Sätter ``freq``
+avbryter nästa ``cyclic func`` om det finns en.
+Om freq är 0 så sätts dras pin låg annars beräknas en ny delay och en ny cyclic function startar.
 
-### ``enable``
-Om generatorn kallas med **på** och den är **på** görs ingenting.
-Om generatorn kallas med **av** och den är **på** sätts status till av samt pin dras till låg.
-Om generatorn kallas med **på** och den är **av** sätts status till på och ``cyclic_func`` kallas.
-Om generatorn kallas med **av** och den är **av** görs ingenting.
 
 ### ``cyclic_func``
 När ``cyclic_func`` kallas och generatorn är av så returnerar functioned.
@@ -154,12 +146,12 @@ så som att sätta s1 segmentet till på och sätta current_generator variabeln 
 Även 00 skrivs till de båda nummer positionerna.
 
 ### ``joy_up_on``, ``joy_up_off``, ``joy_down_on`` och ``joy_down_on``
-Dessa funktioner tar hand om att öka och sänka den nuvarande generatorns frekvens, och skicka av eller på signal till generatorn om frekvensen blir 0 respective 1.
+Dessa funktioner tar hand om att öka och sänka den nuvarande generatorns frekvens.
 När tex ``joy_up_on`` kallas ökas den nuvarande generatorn och des nya värdet skickas till Gui.
-Därefter kallas ``joy_up_on`` med dess baseline är nuvarande baseline + invärdet (omhändertaget av AFTER), invärdet som skickas till den nya ``joy_up_on``
-är 100ms. när ``Joystick_Interrupt_Handler`` kallar på ``joy_up_on`` så kommer nästa ``joy_up_on`` om 1000ms,
+Därefter kallas ``joy_up_on`` med dess nya baseline är nuvarande baseline + invärdet (omhändertaget av AFTER),
+invärdet som skickas till den nya ``joy_up_on`` är 75ms.
+När ``Joystick_Interrupt_Handler`` kallar på ``joy_up_on`` så kommer nästa ``joy_up_on`` om 1000ms,
 därefter kommer resten av ``joy_up_on`` komma med en avstånd på 75ms.
-det existera specialfall då ``enable`` kommer skickas för att stänga av eller på generatorn. 
 
 När off kallas tas den uppkommande ``joy_up_on`` bort med hjälp av ``ABORT``.
 

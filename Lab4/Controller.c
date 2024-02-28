@@ -18,9 +18,6 @@ void joy_up_on(struct Controller *self, int delay_next){
 	int freq = SYNC(self->current_generator,get_freq,NULL);
     if (freq < 99){
         ASYNC(self->current_generator,set_freq,freq+1);
-        if (freq == 0){
-            // enable
-        }
         display_current(self,freq+1);
         // AFTER(bl, obj, meth, arg)
         self->up_msg = AFTER(delay_next, self, joy_up_on, REAPEAT_DEALY);
@@ -36,9 +33,6 @@ void joy_down_on(struct Controller *self, int delay_next){
     int freq = SYNC(self->current_generator,get_freq,NULL);
     if (freq){
         ASYNC(self->current_generator,set_freq,freq-1);
-        if (freq == 1){
-            // disable
-        }
         display_current(self,freq-1);
         self->down_msg = AFTER(delay_next, self, joy_down_on, REAPEAT_DEALY); // make new down counter
     }
