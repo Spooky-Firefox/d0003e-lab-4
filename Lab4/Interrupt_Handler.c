@@ -74,8 +74,7 @@ void PCINT1_handler(struct Interrupt_Handler *self, int _){
     self->last_pin_b = pin_val;
 }
 
-void init_joystick(struct Interrupt_Handler *self, struct Controller *cntr){
-    self->cntr = cntr;
+void init_joystick(struct Interrupt_Handler *self, int _){
     // set all joystick ports to be input with pullup
     // PB4, PB6,PB7 and PE2, PE3
     PORTB = PORTB | (1<<PB4) | (1<<PB6) | (1<<PB7);

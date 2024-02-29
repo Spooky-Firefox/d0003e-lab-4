@@ -16,14 +16,12 @@ struct Gui gui = initGui();
 struct Generator gen1 = initGenerator();
 struct Generator gen2 = initGenerator(); 
 struct Controller cntr = initController(&gui, &gen1, &gen2);
-struct Interrupt_Handler int_handler = initInterrupt_Handler();
+struct Interrupt_Handler int_handler = initInterrupt_Handler(&cntr);
 
 int main(void)
 {	
-	init_joystick(&int_handler, &cntr); // enables interrupt and installs handler
+	init_joystick(&int_handler, NULL); // enables interrupt and installs handler
 	setupLCD(&gui, NULL);
 	tinytimber(&cntr,init_all, NULL);
-
-
 }
 
