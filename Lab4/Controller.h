@@ -23,8 +23,7 @@ struct Controller{
 
 };
 
-#define initController() { initObject(), NULL,NULL, NULL, NULL, NULL, NULL}
-
+#define initController(gui,gen0,gen1) { initObject(), NULL,NULL, gui, gen0, gen0, gen1}
 // initialise variables and sets curent generator
 void init_all(struct Controller *self, int _);
 

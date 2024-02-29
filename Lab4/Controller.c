@@ -66,7 +66,6 @@ void joy_right_off(struct Controller *self, int _){
 }
 
 void init_all(struct Controller *self, int _){
-    self->current_generator = self->generator_0;
     ASYNC(self->gui,set_s1, 1);
 	ASYNC(self->gui,write_left,0);
 	ASYNC(self->gui,write_right,0);

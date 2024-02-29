@@ -12,21 +12,16 @@
 #include "Generator.h"
 #include "Interrupt_Handler.h"
 
-struct Controller cntr = initController();
 struct Gui gui = initGui();
 struct Generator gen1 = initGenerator();
 struct Generator gen2 = initGenerator(); 
+struct Controller cntr = initController(&gui, &gen1, &gen2);
 struct Interrupt_Handler int_handler = initInterrupt_Handler();
 
 int main(void)
 {	
 	init_joystick(&int_handler, &cntr); // enables interrupt and installs handler
 	setupLCD(&gui, NULL);
-	
-	cntr.generator_0 = &gen1;
-	cntr.generator_1 = &gen2;
-	cntr.gui = &gui;
-
 	tinytimber(&cntr,init_all, NULL);
 
 
