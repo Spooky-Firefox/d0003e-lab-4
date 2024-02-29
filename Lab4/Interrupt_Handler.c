@@ -2,50 +2,72 @@
 #include "Controller.h"
 #include "avr/io.h"
 
-#define NOP asm("nop")
 #define DELAY MSEC(1000)
 
+// called when a pin in PINE changed
 void PCINT0_handler(struct Interrupt_Handler *self, int _){
+    // read the pins
     uint8_t pin_val = PINE;
+    // determine which pins changed
 	uint8_t pin_change = pin_val^self->last_pin_e;
-    if (pin_change & (1<<PE2)){ // joy left
+
+    // did the pin for joy left change?
+    if (pin_change & (1<<PE2)){ 
+        // is joy left on or off
         if (pin_val & (1<<PE2)){
             ASYNC(self->cntr, joy_left_off, NULL);
         } else {
+            // debouncing is not needed since multiple presses do the same as one press
             ASYNC(self->cntr, joy_left_on, NULL);
         }
     }
+    // did the pin for joy right change?
     if (pin_change & (1<<PE3)){
-        if (pin_val & (1<<PE3)){ // joy right
+        // is joy right on or off
+        if (pin_val & (1<<PE3)){
             ASYNC(self->cntr, joy_right_off, NULL);
         } else {
+            // debouncing is not needed since multiple presses do the same as one press
             ASYNC(self->cntr, joy_right_on, NULL);
         }
     }
     self->last_pin_e = pin_val;
     
 }
+// called when a pin in PINB changed
 void PCINT1_handler(struct Interrupt_Handler *self, int _){
+    // read the pins
 	uint8_t pin_val = PINB;
+    // determine which pins changed
     uint8_t pin_change = pin_val^self->last_pin_b;
+
+    // dit the pin for joy middle change
     if (pin_change & (1<<PB4)){
-        if (pin_val & (1<<PB4)){ // joy_middle
+        // is joy middle on or off
+        if (pin_val & (1<<PB4)){
             ASYNC(self->cntr, joy_up_off, NULL);
         } else {
+            // replace with AFTER(MSEC(50),cntr, joy_up_on, MSEC(50)) if debouncing is desired
             ASYNC(self->cntr, joy_up_on, MSEC(50));
         }
     }
-    if (pin_change & (1<<PB6)){ //joy_up
+    // dit the pin for joy up change
+    if (pin_change & (1<<PB6)){
+        // is joy up on or off
         if (pin_val & (1<<PB6)){
             ASYNC(self->cntr, joy_up_off, NULL);
         } else {
+            // replace with AFTER(MSEC(50),cntr, joy_up_on, DELAY) if debouncing is desired
             ASYNC(self->cntr, joy_up_on, DELAY);
         }
     }
-    if (pin_change & (1<<PB7)){// joy_down
+    // dit the pin for joy down change
+    if (pin_change & (1<<PB7)){
+        // is joy down on or off
         if (pin_val & (1<<PB7)){
             ASYNC(self->cntr, joy_down_off, NULL);
         } else {
+            // replace with AFTER(MSEC(50),cntr, joy_down_on, DELAY) if debouncing is desired
             ASYNC(self->cntr, joy_down_on, DELAY);
         }
     }
