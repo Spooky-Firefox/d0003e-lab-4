@@ -6,8 +6,8 @@
 #define DELAY MSEC(1000)
 
 void PCINT0_handler(struct Interrupt_Handler *self, int _){
-	uint8_t pin_change = PINE^self->last_pin_e;
     uint8_t pin_val = PINE;
+	uint8_t pin_change = pin_val^self->last_pin_e;
     if (pin_change & (1<<PE2)){ // joy left
         if (pin_val & (1<<PE2)){
             ASYNC(self->cntr, joy_left_off, NULL);
@@ -26,8 +26,8 @@ void PCINT0_handler(struct Interrupt_Handler *self, int _){
     
 }
 void PCINT1_handler(struct Interrupt_Handler *self, int _){
-    uint8_t pin_change = PINB^self->last_pin_b;
 	uint8_t pin_val = PINB;
+    uint8_t pin_change = pin_val^self->last_pin_b;
     if (pin_change & (1<<PB4)){
         if (pin_val & (1<<PB4)){ // joy_middle
             ASYNC(self->cntr, joy_up_off, NULL);
