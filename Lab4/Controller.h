@@ -14,9 +14,8 @@ struct Controller{
     Msg down_msg;
 
     //
-    uint8_t *current_freq;
-    uint8_t freq_0;
-    uint8_t freq_1;
+    uint8_t saved_freq_0;
+    uint8_t saved_freq_1;
 
     // gui
     struct Gui *gui;
@@ -28,7 +27,7 @@ struct Controller{
 
 };
 
-#define initController(gui,gen0,gen1) { initObject(), NULL,NULL, NULL, 0, 0, gui, gen0, gen0, gen1}
+#define initController(gui,gen0,gen1) { initObject(), NULL,NULL, 0, 0, gui, gen0, gen0, gen1}
 // initialise variables and sets curent generator
 void init_all(struct Controller *self, int _);
 
