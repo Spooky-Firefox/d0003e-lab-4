@@ -31,11 +31,14 @@ classDiagram
         - up_msg : Msg
         - down-msg : Msg
 
-        + gui : Gui*
+        - gui : Gui*
+
+        - saved_freq_0 : int
+        - saved_freq_1 : int
 
         - current_generator : Generator*
-        + generator_1 : Generator*
-        + generator_2 : Generator*
+        - generator_1 : Generator*
+        - generator_2 : Generator*
 
         + init_all() void
 
@@ -43,10 +46,12 @@ classDiagram
         + joy_down_on() void
         + joy_left_on() void
         + joy_right_on() void
+        + joy_middle_on() void
         + joy_up_off() void
         + joy_down_off() void
         + joy_left_off() void
         + joy_right_off() void
+        + joy_middle_off() void
         - display_current_generator(int value);
         - switch_left()
         - switch_right()
@@ -113,7 +118,6 @@ Sätter ``freq``
 avbryter nästa ``cyclic func`` om det finns en.
 Om freq är 0 så sätts dras pin låg annars beräknas en ny delay och en ny cyclic function startar.
 
-
 ### ``cyclic_func``
 När ``cyclic_func`` kallas och generatorn är av så returnerar functioned.
 om generatorn är på så byts stadiet på pin och ``after`` kallas med sig själv med en
@@ -156,9 +160,13 @@ därefter kommer resten av ``joy_up_on`` komma med en avstånd på 75ms.
 När off kallas tas den uppkommande ``joy_up_on`` bort med hjälp av ``ABORT``.
 
 ### ``joy_left_on`` och ``joy_right_on``
-dessa funktioner ändrar current_generator och kallar på gui för att ändra vilket segment som indikerar aktiv generator.
+Dessa funktioner ändrar current_generator och kallar på gui för att ändra vilket segment som indikerar aktiv generator.
 
-### ``joy_left_off`` och ``joy_right_off``
+### ``joy_middle_on``
+Funktionen sparar det nuvarande värdet om det inte är ``0``, om det är ``0`` så laddar den in det sparade värdet.
+Efter att den har sparrat sätter den det aktiva värdet till ``0``
+
+### ``joy_left_off``, ``joy_right_off`` och ``joy_middle_off``
 Gör ingenting men finns för att kunna utöka funktionaliteten vid senare skede
 
 ### ``display_current_generator``
