@@ -13,6 +13,11 @@ struct Controller{
     Msg up_msg;
     Msg down_msg;
 
+    //
+    uint8_t *current_freq;
+    uint8_t freq_0;
+    uint8_t freq_1;
+
     // gui
     struct Gui *gui;
 
@@ -23,7 +28,7 @@ struct Controller{
 
 };
 
-#define initController(gui,gen0,gen1) { initObject(), NULL,NULL, gui, gen0, gen0, gen1}
+#define initController(gui,gen0,gen1) { initObject(), NULL,NULL, NULL, 0, 0, gui, gen0, gen0, gen1}
 // initialise variables and sets curent generator
 void init_all(struct Controller *self, int _);
 
@@ -50,3 +55,8 @@ void joy_left_off(struct Controller *self, int _);
 void joy_right_on(struct Controller *self, int _);
 // does nothing
 void joy_right_off(struct Controller *self, int _);
+
+// saves or loads current generators saved value
+void joy_middle_on(struct Controller *self, int _);
+// does nothing
+void joy_middle_off(struct Controller *self, int _);

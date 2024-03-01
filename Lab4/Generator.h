@@ -19,6 +19,7 @@ struct Generator
 // void cyclic_func(struct Generator *self, int _);
 int get_freq(struct Generator *self, int _);
 void set_freq(struct Generator *self, int value);
+void save_freq(struct Generator *self, int _);
 
 
 

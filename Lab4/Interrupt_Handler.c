@@ -45,10 +45,9 @@ void PCINT1_handler(struct Interrupt_Handler *self, int _){
     if (pin_change & (1<<PB4)){
         // is joy middle on or off
         if (pin_val & (1<<PB4)){
-            ASYNC(self->cntr, joy_up_off, NULL);
+            ASYNC(self->cntr, joy_middle_off, NULL);
         } else {
-            // replace with AFTER(MSEC(50),cntr, joy_up_on, MSEC(50)) if debouncing is desired
-            ASYNC(self->cntr, joy_up_on, MSEC(50));
+            ASYNC(self->cntr, joy_middle_on, NULL);
         }
     }
     // dit the pin for joy up change
