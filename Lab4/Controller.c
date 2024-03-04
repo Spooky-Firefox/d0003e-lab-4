@@ -28,8 +28,8 @@ void joy_up_on(struct Controller *self, int delay_next){
         ASYNC(self->current_generator,set_freq,freq+1);
         display_current(self,freq+1);
         // AFTER(bl, obj, meth, arg)
-        self->up_msg = AFTER(delay_next, self, joy_up_on, REAPEAT_DEALY);
     }
+    self->up_msg = AFTER(delay_next, self, joy_up_on, REAPEAT_DEALY);
     // ABORT(self->up_msg); // stop next up counter if exist
 }
 
@@ -42,8 +42,8 @@ void joy_down_on(struct Controller *self, int delay_next){
     if (freq){
         ASYNC(self->current_generator,set_freq,freq-1);
         display_current(self,freq-1);
-        self->down_msg = AFTER(delay_next, self, joy_down_on, REAPEAT_DEALY); // make new down counter
     }
+    self->down_msg = AFTER(delay_next, self, joy_down_on, REAPEAT_DEALY); // make new down counter
     // ABORT(self->down_msg); // stop next down counter if exist
 }
 
