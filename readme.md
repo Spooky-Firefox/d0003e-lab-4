@@ -66,7 +66,6 @@ classDiagram
     }
 
     class Generator {
-        - enable : bool
         - freq : int
         - delay : int
         + pin_manger : Pin_Out_Maneger*
@@ -78,12 +77,10 @@ classDiagram
     }
 
     class Pin_Out_Maneger {
-        - shadow_e4 : bool
-        - shadow_e6 : bool
-        + status_pin_e4() bool
-        + status_pin_e6() bool
-        + set_pin_e4(state) void
-        + set_pin_e6(state) void
+        + init_all_pin() void
+        + status_pin() bool
+        + set_pin_on(state) void
+        + set_pin_off(state) void
     }
 
     class Joystick_Interrupt_Handler {
@@ -164,7 +161,7 @@ Dessa funktioner ändrar current_generator och kallar på gui för att ändra vi
 
 ### ``joy_middle_on``
 Funktionen sparar det nuvarande värdet om det inte är ``0``, om det är ``0`` så laddar den in det sparade värdet.
-Efter att den har sparrat sätter den det aktiva värdet till ``0``
+Efter att den har sparrat sätter den det aktiva värdet till ``0``. värdena sparas i ``saved_freq_0`` och ``saved_freq_1``
 
 ### ``joy_left_off``, ``joy_right_off`` och ``joy_middle_off``
 Gör ingenting men finns för att kunna utöka funktionaliteten vid senare skede
@@ -173,3 +170,13 @@ Gör ingenting men finns för att kunna utöka funktionaliteten vid senare skede
 Denna hjälpfunktion jämför current generator med gen0 och gen1,
 därefter skriver den ut det värde som skickades in.
 
+## ``Pin_Out_Maneger```
+
+### ``init_all_pin``
+sätter ``PE4`` och ``PE6`` till output
+
+### ``status_pin``
+Returnerar om den inskickade pinnen är hög eller låg. Ett värde av 0 ger PE0, och 1 ger PE1 osv.
+
+### ``set_pin_on`` och ``set_pin_off``
+Sätter den givna pinnen hög eller låg, beroende på viket anrop som skickas. tex ``SYNC(pm,set_pin_on, 4)`` skulle sätta PE4 till hög.
