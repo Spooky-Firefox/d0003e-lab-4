@@ -170,7 +170,7 @@ Gör ingenting men finns för att kunna utöka funktionaliteten vid senare skede
 Denna hjälpfunktion jämför current generator med gen0 och gen1,
 därefter skriver den ut det värde som skickades in.
 
-## ``Pin_Out_Maneger```
+## ``Pin_Out_Maneger``
 
 ### ``init_all_pin``
 sätter ``PE4`` och ``PE6`` till output
